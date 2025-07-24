@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered NCD Risk Predictor</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5; /* Light grey background */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top for better scrolling */
+            min-height: 100vh;
+            padding: 2rem 0; /* Add vertical padding */
+        }
+        .container {
+            max-width: 900px; /* Max width for larger screens */
+            width: 95%; /* Responsive width */
+            background-color: #ffffff;
+            border-radius: 1.5rem; /* More rounded corners */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            box-sizing: border-box; /* Include padding in width */
+        }
+        /* Custom styles for better input focus and appearance */
+        input[type="number"], input[type="text"], select {
+            border-radius: 0.75rem; /* Rounded corners for inputs */
+            border: 1px solid #d1d5db; /* Light grey border */
+            padding: 0.75rem 1rem;
+            width: 100%;
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        input[type="number"]:focus, input[type="text"]:focus, select:focus {
+            border-color: #3b82f6; /* Blue border on focus */
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); /* Light blue shadow on focus */
+        }
+        .btn-primary {
+            background-image: linear-gradient(to right, #3b82f6, #2563eb); /* Blue gradient */
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+            cursor: pointer;
+            width: 100%; /* Full width button */
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(59, 130, 246, 0.4);
+        }
+        .result-box {
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            font-weight: 500;
+            text-align: center;
+        }
+        .result-high {
+            background-color: #fee2e2; /* Red-ish background */
+            color: #ef4444; /* Red text */
+            border: 1px solid #fca5a5;
+        }
+        .result-low {
+            background-color: #d1fae5; /* Green-ish background */
+            color: #10b981; /* Green text */
+            border: 1px solid #a7f3d0;
+        }
+        .advisory-box {
+            background-color: #eff6ff; /* Light blue background */
+            color: #1d4ed8; /* Darker blue text */
+            border: 1px solid #bfdbfe;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #3b82f6;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 0.5rem;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4 sm:p-6 md:p-8">
+    <div class="container">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-extrabold text-gray-900 mb-2">
+                <span class="text-blue-600">AI-Powered</span> NCD Risk Predictor
+            </h1>
+            <p class="text-lg text-gray-600">
+                Assess your risk for Non-Communicable Diseases and get personalized health advisories.
+            </p>
+        </header>
+
+        <section class="input-form mb-8 p-6 bg-gray-50 rounded-xl shadow-inner">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Enter Your Health Details</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Row 1 -->
+                <div>
+                    <label for="age" class="block text-sm font-medium text-gray-700 mb-1">Age (Years)</label>
+                    <input type="number" id="age" name="age" min="18" max="99" value="30"
+                           class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label for="gender" class="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+                    <select id="gender" name="gender"
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="bmi" class="block text-sm font-medium text-gray-700 mb-1">BMI (kg/m²)</label>
+                    <input type="number" id="bmi" name="bmi" min="10.0" max="50.0" step="0.1" value="22.0"
+                           class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <!-- Row 2 -->
+                <div>
+                    <label for="systolic_bp" class="block text-sm font-medium text-gray-700 mb-1">Systolic BP (mmHg)</label>
+                    <input type="number" id="systolic_bp" name="systolic_bp" min="70" max="200" value="120"
+                           class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label for="diastolic_bp" class="block text-sm font-medium text-gray-700 mb-1">Diastolic BP (mmHg)</label>
+                    <input type="number" id="diastolic_bp" name="diastolic_bp" min="40" max="120" value="80"
+                           class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label for="smoking" class="block text-sm font-medium text-gray-700 mb-1">Smoking Status</label>
+                    <select id="smoking" name="smoking"
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <option value="Never">Never Smoked</option>
+                        <option value="Ex-Smoker">Ex-smoker</option>
+                        <option value="Current">Current Smoker</option>
+                    </select>
+                </div>
+
+                <!-- Row 3 -->
+                <div>
+                    <label for="alcohol" class="block text-sm font-medium text-gray-700 mb-1">Alcohol Consumption</label>
+                    <select id="alcohol" name="alcohol"
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <option value="Never">Never</option>
+                        <option value="Rarely">Rarely</option>
+                        <option value="Occasionally">Occasionally</option>
+                        <option value="Regularly">Regularly</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="physical_activity" class="block text-sm font-medium text-gray-700 mb-1">Physical Activity</label>
+                    <select id="physical_activity" name="physical_activity"
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <option value="Low">Low</option>
+                        <option value="Moderate">Moderate</option>
+                        <option value="High">High</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="education" class="block text-sm font-medium text-gray-700 mb-1">Education Level</label>
+                    <select id="education" name="education"
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <option value="No Education">No Education</option>
+                        <option value="Primary">Primary</option>
+                        <option value="Secondary">Secondary</option>
+                        <option value="Higher">Higher</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mt-8 text-center">
+                <button id="calculateRiskBtn" class="btn-primary">
+                    <span id="buttonText">Calculate Risk</span>
+                    <span id="loadingSpinner" class="loading-spinner hidden"></span>
+                </button>
+            </div>
+        </section>
+
+        <section id="resultsSection" class="hidden mb-8">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Your Personalized Risk Assessment</h2>
+            <div id="riskResult" class="result-box">
+                <!-- Risk prediction will be displayed here -->
+            </div>
+            <div id="advisory" class="advisory-box mt-4">
+                <!-- Personalized advisory will be displayed here -->
+            </div>
+            <div id="contributingFactors" class="mt-4 p-4 bg-gray-50 rounded-lg text-gray-700 shadow-inner">
+                <h3 class="text-lg font-medium mb-2">Key Contributing Factors:</h3>
+                <ul id="factorsList" class="list-disc list-inside">
+                    <!-- Contributing factors will be listed here -->
+                </ul>
+            </div>
+        </section>
+
+        <footer class="text-center text-gray-500 text-sm mt-8 pt-4 border-t border-gray-200">
+            <p>This tool is for informational purposes only and should not be used as a substitute for professional medical advice, diagnosis, or treatment. Always consult with a qualified healthcare provider for any health concerns.</p>
+            <p class="mt-2">&copy; 2025 AI-Powered NCD Risk Predictor. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- Link to external JavaScript file -->
+    <script src="script.js"></script>
+</body>
+</html>
