@@ -1,0 +1,82 @@
+*{
+    margin: 0;
+    padding:0;
+}
+body{
+    background-color: #e6a168;
+    text-align: center;
+    margin-top: 10px;
+}
+h1{
+    font-family: sans-serif;
+    font-size: 50px;
+}
+.container{
+    height: 70vh;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+.game{
+    height: 60vmin;
+    width: 60vmin;
+    justify-content: center;
+    align-items: center;
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr ;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap:10px;
+}
+.box{
+    background-color: rgb(195, 88, 228);
+    height: 18vmin;
+    width: 18vmin;
+    border-radius: 12px;
+    border-width: 7px;
+    border-color: rgb(194, 99, 197);
+    box-shadow: 0 0 0.7rem rgb(0, 0,0.2);
+    font-size: 8vmin;
+    color: rgb(99, 24, 24);
+}
+#reset{
+    height: 55px;
+    width: 150px;
+    color: rgb(78, 20, 20);
+    background-color: rgb(241, 187, 185);
+    font-size: 22px;
+    font-weight: 700;
+    border-radius: 12px;
+    border-width: 7px;
+    border-color: rgb(197, 75, 75);
+    box-shadow: 0 0 0.7rem rgb(0, 0,0.2);
+}
+#new-game{
+     height: 55px;
+    width: 150px;
+    color: rgb(78, 20, 20);
+    background-color: rgb(241, 187, 185);
+    font-size: 22px;
+    font-weight: 700;
+    border-radius: 12px;
+    border-width: 7px;
+    border-color: rgb(197, 75, 75);
+    box-shadow: 0 0 0.7rem rgb(0, 0,0.2);
+}
+.msg-container{
+    height:100vmin;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap:4rem;
+}
+.hide{
+    display:none;
+}
+#msg{
+    font-weight: 300;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    color:maroon;
+    font-size: 25px;
+    padding: 7.5px;
+}
